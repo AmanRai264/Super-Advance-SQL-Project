@@ -1,14 +1,14 @@
 -- Q.1. Find the top 5 most purchased products along with their total sales amount.
 
-SELECT
-    product_name, 
-	SUM(price) 
-FROM product_table
-GROUP BY 1
-ORDER BY 2 DESC
-LIMIT 10
-
---It is wronge
+SELECT 
+    p.product_name, 
+    SUM(f.quantity) AS total_quantity_sold, 
+    SUM(f.quantity * p.price) AS total_sales_amount
+FROM fact_table f
+JOIN product_table p ON f.product_id = p.product_id
+GROUP BY p.product_name
+ORDER BY total_sales_amount DESC
+LIMIT 5;
 
 --Q.2) Identify customers who have made transactions using more than one device type.
 
