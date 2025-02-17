@@ -116,25 +116,6 @@ order by cat desc
 --Find the most commonly used device type for purchasing products in each product category. 
 --Display the category, device type, and the total number of purchases made using that device.
 
-
-with q as (select distinct p.category as cat, device_type, count(d.device_id) as counti
-from  fact_table f
-join product_table p
-on f.product_id = p.product_id
-join device_table d
-on d.device_id = f.device_id
-group by 1, 2
-order by 3 desc)
-
-select  distinct s.cat,d.device_type, max(s.counti) as totle_number, 
-rank() over( partition by d.device_type  order by s.counti desc )
-from q s
-join device_table d
-on d.device_type = s.device_type
-group by 1, 2 
-
-
---right answer 
 WITH q AS (
     SELECT 
         p.category AS cat, 
@@ -175,19 +156,6 @@ limit 3
 --Identify the top 3 cities where customers have made the highest number of repeat purchases (more than one purchase). 
 --Display city and repeat_purchase_count.
 
-with cst as (select  f.customer_id, c.city, count(f.session_id) as count from fact_table f
-join customer_table c
-on c.customer_id =f.customer_id
-group by 1, 2
-having count(session_id) >=2
-order by count)
-
-select city, count(count) from cst
-group by 1
-order by count desc
-limit 3
-
---this is right 
 WITH cst AS (
     SELECT f.customer_id, c.city, COUNT(f.session_id) AS purchase_count
     FROM fact_table f
@@ -204,19 +172,6 @@ LIMIT 3;
 
 --Find the best-selling product (highest quantity sold) for each month in 2023. 
 --Display month_name, product_name, and total_quantity_sold
-	      
-with ser as (select 	p.product_name, sum(quantity) as total_quantity_sold, date_trunc('month',  d.date)  as months
-from fact_table f
-join date_table d
-on d.date_id = f.date_id
-join product_table p
-on p.product_id = f.product_id
-group by months, p.product_name
-order by months desc) 
-
-select  product_name,months, sum(total_quantity_sold)  total_quantity_sod from ser
-group by 1,2
-order by months, total_quantity_sod desc
 
 WITH ser AS (
     SELECT 
