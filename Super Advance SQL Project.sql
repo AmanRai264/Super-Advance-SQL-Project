@@ -1,4 +1,4 @@
--- Q.1. Find the top 5 most purchased products along with their total sales amount.
+-- Q.1) Find the top 5 most purchased products along with their total sales amount.
 
 SELECT 
     p.product_name, 
@@ -23,7 +23,7 @@ GROUP BY f.customer_id, c.customer_name
 HAVING COUNT(DISTINCT d.device_type) > 1
 ORDER BY device_count DESC;
 
--- Determine the monthly revenue trend over the last 12 months and identify any seasonal patterns.
+--Q.3) Determine the monthly revenue trend over the last 12 months and identify any seasonal patterns.
 
 SELECT 
     DATE_TRUNC('month', d.date) AS month,
@@ -35,32 +35,7 @@ JOIN date_table d ON f.date_id = d.date_id
 GROUP BY month
 ORDER BY month;
 
--- Find the top 5 customers who have spent the most money in the last 6 months.
-Identify products that were purchased by at least 3 different customers.
-Determine the average order value (total revenue / total orders) for each month in the last year.
-
-select c.customer_name AS customer, (q.quantity * p.price) as spent, d.date as date
-from fact_table q
-
-JOIN date_table d
-ON d.date_id = q.date_id
-JOIN product_table p
-ON p.product_id = q.product_id
-JOIN customer_table c
-ON c.customer_id = q.customer_id
-
-WHERE date >= (
-    SELECT MAX(date) FROM date_table
-) - INTERVAL '6 months'
-
-GROUP BY customer, spent, date
-order by spent desc
-limit 5
-
-select * from customer_table
-
-
-
+-- Q.4) Find the top 5 customers who have spent the most money in the last 6 months.
 
 SELECT 
     c.customer_name AS customer, 
@@ -77,7 +52,7 @@ ORDER BY total_spent DESC
 LIMIT 5;
 
 
--- Identify products that were purchased by at least 3 different customers.
+-- Q.5) Identify products that were purchased by at least 3 different customers.
 
 SELECT 
     p.product_name, 
@@ -88,17 +63,28 @@ JOIN customer_table c ON f.customer_id = c.customer_id
 GROUP BY p.product_name
 HAVING COUNT(DISTINCT f.customer_id) >= 3;
 
---Determine the average order value (total revenue / total orders) for each month in the last year.
+--Q.6) Determine the average order value (total revenue / total orders) for each month in the last year.
 
+WITH last_year_orders AS (
+    SELECT 
+        d.year, d.month, 
+        SUM(f.quantity * p.price) AS total_revenue,
+        COUNT(DISTINCT f.session_id) AS total_orders
+    FROM fact_table f
+    JOIN product_table p ON f.product_id = p.product_id
+    JOIN date_table d ON f.date_id = d.date_id
+    WHERE d.year = EXTRACT(YEAR FROM CURRENT_DATE) - 1
+    GROUP BY d.year, d.month
+)
 SELECT 
-    DATE_TRUNC('month', d.date) AS month,
-    SUM(f.quantity * p.price) / COUNT(DISTINCT f.order_id) AS avg_order_value
-FROM fact_table f
-JOIN product_table p ON p.product_id = f.product_id
-JOIN date_table d ON d.date_id = f.date_id
-WHERE d.date >= (SELECT MAX(date) FROM date_table) - INTERVAL '12 months'
-GROUP BY month
-ORDER BY month;
+    year, 
+    month, 
+    total_revenue, 
+    total_orders, 
+    ROUND(total_revenue::NUMERIC / NULLIF(total_orders, 0), 2) AS avg_order_value
+FROM last_year_orders
+ORDER BY year DESC, month DESC;
+
 
 
 --Find the Repeat Customers (Returning Customers) in the Last 6 Months
