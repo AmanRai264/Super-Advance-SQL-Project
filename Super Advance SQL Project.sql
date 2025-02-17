@@ -12,19 +12,6 @@ LIMIT 5;
 
 --Q.2) Identify customers who have made transactions using more than one device type.
 
-with aa as (SELECT device_id , customer_id  
-FROM fact_table
-GROUP BY 2, 1)
-select aa.device_id, aa.customer_id
-    from aa
-	group by 1, 2
-
-
-
-
-select * 
-       from device_table
-
 SELECT 
     f.customer_id, 
     c.customer_name,
