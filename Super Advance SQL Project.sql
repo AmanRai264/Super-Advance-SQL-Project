@@ -189,6 +189,3 @@ SELECT DISTINCT ON (months)
     total_quantity_sold
 FROM ser
 ORDER BY months, total_quantity_sold DESC;
-
-
-select * from date_table
