@@ -70,3 +70,6 @@ This document contains a collection of SQL queries designed to analyze various a
 ## Conclusion
 These queries provide valuable insights into an e-commerce platform’s performance, customer behavior, and sales trends. They can be extended further for more advanced analytics.
 
+## Athour
+Aman Rai
+
