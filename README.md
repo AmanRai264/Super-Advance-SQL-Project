@@ -49,11 +49,7 @@ This document contains a collection of SQL queries designed to analyze various a
     - Identifies the top 3 most expensive products and how often they were purchased.
     - Orders by `price DESC` and limits results to 3.
 
-12. **Top 3 Cities with Highest Repeat Purchases**
-    - Finds cities where customers have made the highest number of repeat purchases.
-    - Uses a `WITH` clause to count repeat purchases per city.
-
-13. **Best-Selling Product for Each Month in 2023**
+12. **Best-Selling Product for Each Month in 2023**
     - Identifies the highest-selling product (by quantity) for each month.
     - Uses `DISTINCT ON (month)` to return one product per month ordered by quantity sold.
 
